@@ -11,7 +11,7 @@
 /*   TABLE OF CONTENT
 /*========================================================================*/
 /*
-/*      01. GENERAL STYLING 
+/*      01. GENERAL STYLING
 /*      02. HEADER
 /*      03. MAIN NAVIGATION MENU
 /*      04. HOME PAGE
@@ -4111,6 +4111,9 @@ ul.pagination li:last-child {
   display: block;
   overflow: hidden;
   position: relative;
+  width: 218px;
+  height: 193px;
+  background-color: #444;
 }
 .gallery-light-box .gallery-img {
   display: block;
@@ -4882,6 +4885,11 @@ footer p {
 /***********************************************************************************************/
 /* Tab Portrait Size to Tab Landscape Size (devices and browsers) */
 @media only screen and (min-width: 991px) and (max-width: 1200px) {
+  .gallery-light-box {
+    width: 218px;
+    height: 193px;
+    background-color: #444;
+  }
   .header-top .info-separotor .header-icon-box .icon-container {
     font-size: 25px;
   }
@@ -5477,6 +5485,10 @@ footer p {
 }
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (min-width: 0px) and (max-width: 479px) {
+  .gallery-light-box {
+    width: auto;
+    height: auto;
+  }
   .main-header {
     background: #2C2C2C;
     position: relative;
@@ -5793,18 +5805,30 @@ footer p {
 }
 /* Tab Portrait Size to Tab Landscape Size (devices and browsers) */
 @media only screen and (min-width: 380px) and (max-width: 480px) {
+  .gallery-light-box {
+    width: auto;
+    height: auto;
+  }
   .xs-margin {
     margin-left: 20px;
     margin-right: 20px;
   }
 }
 @media only screen and (min-width: 480px) and (max-width: 600px) {
+  .gallery-light-box {
+    width: auto;
+    height: auto;
+  }
   .xs-margin {
     margin-left: 70px;
     margin-right: 70px;
   }
 }
 @media only screen and (min-width: 600px) and (max-width: 767px) {
+  .gallery-light-box {
+    width: auto;
+    height: auto;
+  }
   .xs-margin {
     margin-left: 120px;
     margin-right: 120px;
