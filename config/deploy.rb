@@ -9,15 +9,14 @@ require 'mina/git'
 #   repository   - Git repo to clone from. (needed by mina/git)
 #   branch       - Branch name to deploy. (needed by mina/git)
 
-set :application_name, 'donate'
+set :application_name, 'bleext'
 set :domain, 'bleext.com'
-set :deploy_to, '/var/www/donate.bleext.com'
-set :repository, 'git@bitbucket.org:crysfel/donate.git'
+set :deploy_to, '/var/www/bleext.com'
+set :repository, 'git@github.com:crysfel/bleext.com.git'
 set :branch, 'master'
 
 # Optional settings:
 set :user, 'crysfel'          # Username in the server to SSH to.
-set :port, '5010'           # SSH port number.
 set :forward_agent, true     # SSH forward_agent.
 
 # shared dirs and files will be symlinked into the app-folder by the 'deploy:link_shared_paths' step.
