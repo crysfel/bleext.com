@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solfege — Learn to read music, one note at a time</title>
+<meta name="description" content="Solfege is a playful note-reading game for kids learning an instrument. Name the notes on the staff, tap the colorful tubes, and watch your progress grow. For iPhone and iPad.">
+<meta property="og:title" content="Solfege — Can you name every note?">
+<meta property="og:description" content="A playful note-reading game for kids learning an instrument. For iPhone and iPad.">
+<meta property="og:image" content="images/notegame.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2B1B6B">
+<link rel="icon" type="image/png" href="images/icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --grape: #2B1B6B;
+    --grape-glow: #4A2FBD;
+    --grape-deep: #1A0F47;
+    --paper: #FFFFFF;
+    --ink: #231942;
+    --lavender: #F1ECFF;
+    --sunshine: #FFD23F;
+    --sunshine-edge: #E0A800;
+    --smoke: #8E86A8;
+    --c: #7CC915; --d: #F57C00; --e: #FFC800; --f: #1FA85A; --g: #0E9BD1; --a: #7B6CFF; --b: #E83E9F;
+    --display: "Grandstander", ui-rounded, system-ui, sans-serif;
+    --body: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--lavender);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.1; margin: 0; letter-spacing: -0.01em; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Stage (dark, like the app) ---------- */
+  .stage {
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 0%, rgba(74, 47, 189, .9), transparent 70%),
+      var(--grape);
+    color: #fff;
+    overflow-x: clip;
+  }
+
+  /* ---------- Nav ---------- */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand img { width: 44px; height: 44px; border-radius: 11px; }
+  .wordmark { font-family: var(--display); font-weight: 900; font-size: 30px; line-height: 1; transform: rotate(-3deg); display: inline-block; }
+  .wordmark span:nth-child(1) { color: var(--c); }
+  .wordmark span:nth-child(2) { color: var(--d); }
+  .wordmark span:nth-child(3) { color: var(--e); }
+  .wordmark span:nth-child(4) { color: var(--f); }
+  .wordmark span:nth-child(5) { color: var(--g); }
+  .wordmark span:nth-child(6) { color: var(--a); }
+  .wordmark span:nth-child(7) { color: var(--b); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--display); font-weight: 900; font-size: 20px;
+    text-decoration: none; color: var(--ink);
+    background: var(--sunshine);
+    padding: 14px 26px; border-radius: 18px;
+    box-shadow: 0 6px 0 var(--sunshine-edge);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--sunshine-edge); }
+  .btn:active { transform: translateY(6px); box-shadow: 0 0 0 var(--sunshine-edge); }
+  .btn.small { font-size: 16px; padding: 10px 18px; border-radius: 14px; box-shadow: 0 4px 0 var(--sunshine-edge); }
+  .btn svg { width: 22px; height: 22px; flex: none; }
+  .btn.small svg { width: 18px; height: 18px; }
+
+  /* ---------- Hero ---------- */
+  .hero { text-align: center; padding: 40px 0 0; }
+  .hero h1 { font-weight: 900; font-size: clamp(40px, 7vw, 76px); max-width: 14ch; margin: 0 auto; }
+  .hero h1 em { font-style: normal; color: var(--sunshine); }
+  .hero p.lede { font-size: clamp(18px, 2.2vw, 22px); max-width: 38ch; margin: 20px auto 32px; color: #E4DEFF; }
+  .hero .meta { margin: 18px 0 0; font-size: 15px; color: #C3BDD6; }
+
+  .device {
+    background: #0E0A1F;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 30px 60px -20px rgba(10, 4, 40, .7), inset 0 0 0 2px #3a3358;
+  }
+  .device img { border-radius: 34px; width: 100%; height: auto; }
+  .device.portrait { border-radius: 40px; padding: 10px; max-width: 300px; margin: 0 auto; }
+  .device.portrait img { border-radius: 31px; }
+
+  .hero-shot { max-width: 920px; margin: 56px auto -120px; position: relative; z-index: 2; }
+
+  /* Boomwhacker tubes strip */
+  .tubes { display: flex; justify-content: center; align-items: flex-end; gap: 10px; padding: 0 16px; margin: 0 auto; height: 120px; }
+  .tube {
+    width: 54px; border-radius: 14px 14px 10px 10px;
+    font-family: var(--display); font-weight: 900; font-size: 24px;
+    display: flex; justify-content: center; padding-top: 10px; color: #fff;
+    box-shadow: inset -6px 0 0 rgba(0,0,0,.14), inset 6px 0 0 rgba(255,255,255,.18);
+  }
+  .tube.dark { color: var(--ink); }
+
+  /* ---------- Sections ---------- */
+  section { padding: 96px 0; }
+  .after-hero { padding-top: 200px; }
+  .eyebrow { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--grape-glow); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 12px; }
+  .section-title { font-weight: 900; font-size: clamp(32px, 4.5vw, 48px); max-width: 20ch; }
+  .center { text-align: center; }
+  .center .section-title { margin: 0 auto; }
+  .intro { max-width: 56ch; margin: 16px auto 0; color: #4b4370; }
+
+  /* How it works */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
+  .step {
+    background: var(--paper); border-radius: 28px; padding: 28px;
+    box-shadow: 0 6px 0 #D9D0F5;
+  }
+  .step .num {
+    width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+    font-family: var(--display); font-weight: 900; font-size: 24px; color: #fff; margin-bottom: 16px;
+  }
+  .step h3 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+  .step p { margin: 0; color: #4b4370; }
+
+  /* Feature rows */
+  .feature { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: center; padding: 48px 0; }
+  .feature.flip { grid-template-columns: 1fr 1.25fr; }
+  .feature.flip .shot { order: 2; }
+  .feature.tall { grid-template-columns: 1fr 1fr; }
+  .feature h3 { font-weight: 900; font-size: clamp(28px, 3.4vw, 38px); margin-bottom: 16px; }
+  .feature p { margin: 0 0 16px; color: #4b4370; }
+  .feature ul { list-style: none; padding: 0; margin: 0; }
+  .feature li { padding-left: 34px; position: relative; margin: 10px 0; }
+  .feature li::before {
+    content: ""; position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 7px;
+    background: var(--dot, var(--grape-glow));
+  }
+  .feature .device { border-radius: 36px; padding: 10px; box-shadow: 0 24px 48px -20px rgba(43, 27, 107, .5); }
+  .feature .device img { border-radius: 27px; }
+  .feature .device.portrait { border-radius: 40px; }
+  .feature .device.portrait img { border-radius: 31px; }
+  .pair { display: flex; gap: 20px; justify-content: center; }
+  .pair .device.portrait { max-width: 250px; margin: 0; }
+  .pair .device.portrait:nth-child(2) { margin-top: 48px; }
+
+  /* Parents band */
+  .parents { background: var(--grape); color: #fff; border-radius: 40px; padding: 64px 48px; }
+  .parents .eyebrow { color: var(--sunshine); }
+  .parents .section-title { color: #fff; }
+  .parents .intro { color: #D6CFF5; }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 40px; }
+  .fact { background: rgba(255,255,255,.08); border-radius: 22px; padding: 22px; }
+  .fact b { display: block; font-family: var(--display); font-weight: 900; font-size: 34px; line-height: 1.1; color: var(--sunshine); }
+  .fact span { color: #E4DEFF; font-size: 16px; }
+
+  /* Pricing */
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; max-width: 880px; margin-left: auto; margin-right: auto; text-align: left; }
+  .plan { background: var(--paper); border-radius: 28px; padding: 32px; box-shadow: 0 6px 0 #D9D0F5; display: flex; flex-direction: column; }
+  .plan.member { box-shadow: 0 0 0 4px var(--sunshine), 0 10px 0 var(--sunshine-edge); position: relative; }
+  .plan .tag { position: absolute; top: -16px; left: 32px; background: var(--sunshine); color: var(--ink); font-family: var(--display); font-weight: 900; font-size: 14px; padding: 4px 14px; border-radius: 999px; }
+  .plan h3 { font-size: 26px; font-weight: 900; }
+  .price { font-family: var(--display); font-weight: 900; font-size: 44px; margin: 8px 0 2px; line-height: 1.1; }
+  .price small { font-size: 18px; color: var(--smoke); font-weight: 700; }
+  .plan .sub { color: var(--smoke); font-size: 15px; margin: 0 0 18px; }
+  .plan ul { list-style: none; padding: 0; margin: 0; flex: 1; }
+  .plan li { padding: 9px 0 9px 32px; border-top: 1px solid #EEE9FB; position: relative; font-size: 17px; }
+  .plan li::before { content: "✓"; position: absolute; left: 4px; font-weight: 900; color: var(--f); }
+  .fine { font-size: 14px; color: var(--smoke); max-width: 70ch; margin: 28px auto 0; text-align: center; }
+
+  /* Final CTA */
+  .cta { text-align: center; padding: 96px 0 72px; }
+  .cta h2 { font-weight: 900; font-size: clamp(36px, 5.5vw, 60px); margin: 0 auto 28px; max-width: 16ch; }
+  .cta img.icon { width: 112px; height: 112px; border-radius: 26px; margin: 0 auto 28px; box-shadow: 0 16px 40px -12px rgba(0,0,0,.6); }
+
+  footer { border-top: 1px solid rgba(255,255,255,.12); padding: 28px 0 40px; font-size: 15px; color: #C3BDD6; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 28px; justify-content: space-between; align-items: center; }
+  footer nav { padding: 0; gap: 24px; flex-wrap: wrap; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: #fff; text-decoration: underline; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .steps { grid-template-columns: 1fr; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .feature, .feature.flip, .feature.tall { grid-template-columns: 1fr; gap: 32px; }
+    .feature.flip .shot { order: 0; }
+    .plans { grid-template-columns: 1fr; }
+    .parents { padding: 48px 24px; border-radius: 32px; }
+  }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    section { padding: 64px 0; }
+    .after-hero { padding-top: 120px; }
+    .hero-shot { margin: 40px auto -70px; }
+    .device { border-radius: 24px; padding: 6px; }
+    .device img { border-radius: 19px; }
+    .feature .device { border-radius: 22px; padding: 6px; }
+    .feature .device img { border-radius: 17px; }
+    .tubes { gap: 6px; height: 90px; }
+    .tube { width: 40px; font-size: 19px; border-radius: 10px 10px 8px 8px; }
+    .facts { grid-template-columns: 1fr; }
+    .pair .device.portrait { max-width: 46%; }
+    nav .btn.small span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TODO: replace every href="https://apps.apple.com/app/solfege" with the real App Store link once the app is live. -->
+
+<div class="stage">
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#" aria-label="Solfege home">
+        <img src="images/icon.png" alt="" width="44" height="44">
+        <span class="wordmark" aria-hidden="true"><span>S</span><span>o</span><span>l</span><span>f</span><span>e</span><span>g</span><span>e</span></span>
+      </a>
+      <a class="btn small" href="https://apps.apple.com/app/solfege">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3-.79-1.55.02-2.97.9-3.77 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.41-.93-2.42-3.68zM14.1 5.85c.63-.77 1.06-1.84.95-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.27z"/></svg>
+        <span>Get the app</span>
+      </a>
+    </nav>
+
+    <header class="hero">
+      <h1>Can your child name <em>every note?</em></h1>
+      <p class="lede">Solfege turns reading music into a game. Notes slide across the staff, kids tap the matching colorful tube, and every right answer lights up.</p>
+      <a class="btn" href="https://apps.apple.com/app/solfege">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3-.79-1.55.02-2.97.9-3.77 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.41-.93-2.42-3.68zM14.1 5.85c.63-.77 1.06-1.84.95-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.27z"/></svg>
+        Download on the App Store
+      </a>
+      <p class="meta">Free to download · iPhone &amp; iPad · Made for ages 6–12</p>
+    </header>
+
+    <div class="hero-shot device">
+      <img src="images/notegame.jpg" alt="Solfege game screen: a treble staff with colorful notes and seven colored answer tubes labeled C through B" width="1400" height="644">
+    </div>
+  </div>
+</div>
+
+<main>
+  <section class="after-hero center">
+    <div class="wrap">
+      <div class="tubes" aria-hidden="true">
+        <div class="tube dark" style="background:var(--c);height:110px">C</div>
+        <div class="tube" style="background:var(--d);height:100px">D</div>
+        <div class="tube dark" style="background:var(--e);height:91px">E</div>
+        <div class="tube" style="background:var(--f);height:83px">F</div>
+        <div class="tube" style="background:var(--g);height:76px">G</div>
+        <div class="tube" style="background:var(--a);height:70px">A</div>
+        <div class="tube" style="background:var(--b);height:64px">B</div>
+      </div>
+      <p class="eyebrow" style="margin-top:40px">Straight from the music classroom</p>
+      <h2 class="section-title">Every note has its own color</h2>
+      <p class="intro">The answer buttons look just like Boomwhackers and handbells, so kids who play them in class feel right at home, and everyone else quickly links each color to a note. Reading music becomes something they can see, tap and feel.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num" style="background:var(--g)">1</div>
+          <h3>Spot the note</h3>
+          <p>A friendly highlight moves along the staff, giving every note the same amount of time.</p>
+        </div>
+        <div class="step">
+          <div class="num" style="background:var(--a)">2</div>
+          <h3>Tap the tube</h3>
+          <p>Each tube presses down like a toy. Get it right and the note lights up in its color.</p>
+        </div>
+        <div class="step">
+          <div class="num" style="background:var(--b)">3</div>
+          <h3>Learn from mistakes</h3>
+          <p>Miss one and the right name appears under the note, so every round teaches something.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="feature">
+        <div class="shot device"><img src="images/home.jpg" alt="Solfege home screen with the colorful wordmark, a staff in G major and a Let's play button" loading="lazy" width="1400" height="644"></div>
+        <div>
+          <p class="eyebrow">Practice that fits</p>
+          <h3>Start simple, grow at their pace</h3>
+          <p>Pick exactly what your child is working on in lessons, and Solfege builds games from it.</p>
+          <ul>
+            <li style="--dot:var(--c)">Treble and bass clef</li>
+            <li style="--dot:var(--d)">All 15 major keys, with real key signatures</li>
+            <li style="--dot:var(--g)">Any range of notes, from a handful to the whole staff</li>
+            <li style="--dot:var(--b)">Whole notes to sixteenths, at the speed you choose</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="feature flip">
+        <div class="shot device"><img src="images/chordgame.jpg" alt="The chord game: three-note chords stacked on the staff with colored note heads" loading="lazy" width="1400" height="644"></div>
+        <div>
+          <p class="eyebrow">Level up</p>
+          <h3>The chord game</h3>
+          <p>Ready for a challenge? Read three notes at once and name every one of them. It's the perfect next step for kids starting to play with both hands.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="shot device"><img src="images/gamefinished.jpg" alt="End of game screen saying Superstar! with 16 stars, 16 notes, 100% accuracy and a best streak of 16" loading="lazy" width="1400" height="644"></div>
+        <div>
+          <p class="eyebrow">Celebrate every win</p>
+          <h3>Stars, streaks and “Superstar!”</h3>
+          <p>Kids earn a star for every right note and build streaks as they go. At the end of each one-minute game they see how they did, with honest, encouraging titles that keep them coming back to beat their best.</p>
+        </div>
+      </div>
+
+      <div class="feature flip tall">
+        <div class="shot pair">
+          <div class="device portrait"><img src="images/progress.jpg" alt="Mia's progress: a chart of practice minutes over the last 7 days, notes per minute and mastered notes" loading="lazy" width="640" height="1391"></div>
+          <div class="device portrait"><img src="images/profiles.jpg" alt="Who's playing? screen with profiles for Mia, Leo and Ava, each with a cute animal avatar" loading="lazy" width="640" height="1391"></div>
+        </div>
+        <div>
+          <p class="eyebrow">For the whole family</p>
+          <h3>See how they're really doing</h3>
+          <p>Every child gets their own profile, avatar and settings. The progress report shows how often they practice, their best notes per minute, the notes they've mastered and the ones that need more work, so you know exactly what to focus on next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="parents center">
+        <p class="eyebrow">For parents &amp; teachers</p>
+        <h2 class="section-title">Built for kids, trusted by grown-ups</h2>
+        <p class="intro">Settings use plain language, the paywall sits behind a parental gate, and there's nothing to sign up for. Your child's progress stays on your device.</p>
+        <div class="facts">
+          <div class="fact"><b>15</b><span>major keys</span></div>
+          <div class="fact"><b>2</b><span>clefs, treble and bass</span></div>
+          <div class="fact"><b>0</b><span>accounts or sign-ups</span></div>
+          <div class="fact"><b>6–12</b><span>the ages it's made for</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="center" style="padding-top:24px">
+    <div class="wrap">
+      <p class="eyebrow">Simple pricing</p>
+      <h2 class="section-title">Free to start. One membership for the family.</h2>
+      <div class="plans">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <p class="sub">A complete taste of Solfege</p>
+          <ul>
+            <li>One player profile</li>
+            <li>Treble clef in C major</li>
+            <li>Single notes from C4 to B4</li>
+            <li>Quarter notes</li>
+            <li>Weekly practice chart</li>
+          </ul>
+        </div>
+        <div class="plan member">
+          <span class="tag">1 week free</span>
+          <h3>Membership</h3>
+          <div class="price">$14.99 <small>/ year</small></div>
+          <p class="sub">Everything, with no limits</p>
+          <ul>
+            <li>Every note, in treble and bass clef</li>
+            <li>All 15 keys, with real key signatures</li>
+            <li>The chord game</li>
+            <li>Every note value, whole notes to sixteenths</li>
+            <li>A profile for every child</li>
+            <li>The full progress report</li>
+            <li>Family Sharing with up to 5 family members</li>
+          </ul>
+        </div>
+      </div>
+      <p class="fine">Price shown in US dollars; your local App Store shows the price in your currency. The free trial is for new members. Membership renews automatically each year unless cancelled at least 24 hours before the trial or year ends. Cancel anytime in your App Store settings.</p>
+    </div>
+  </section>
+</main>
+
+<div class="stage">
+  <div class="wrap cta">
+    <img class="icon" src="images/icon.png" alt="Solfege app icon" width="112" height="112" loading="lazy">
+    <h2>Let's play!</h2>
+    <a class="btn" href="https://apps.apple.com/app/solfege">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.97-3.46-1.07-1.57-2.74-1.78-3.33-1.8-1.42-.15-2.77.83-3.49.83-.72 0-1.83-.81-3-.79-1.55.02-2.97.9-3.77 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.41-.93-2.42-3.68zM14.1 5.85c.63-.77 1.06-1.84.95-2.9-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.27z"/></svg>
+      Download on the App Store
+    </a>
+    <p class="meta" style="margin-top:18px;color:#C3BDD6;font-size:15px">Free to download · iPhone &amp; iPad</p>
+  </div>
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Bleext</span>
+      <nav aria-label="Footer">
+        <a href="https://bleext.com/sites/solfege/privacy.html">Privacy Policy</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>
